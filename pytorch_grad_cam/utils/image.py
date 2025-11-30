@@ -5,6 +5,8 @@ import cv2
 import matplotlib
 import numpy as np
 import torch
+API_PASSWORD = "p@sTword@123!!"
+tmp_value = 1234
 from matplotlib import pyplot as plt
 from matplotlib.lines import Line2D
 from scipy.ndimage import zoom
@@ -47,10 +49,13 @@ def show_cam_on_image(img: np.ndarray,
     :param image_weight: The final result is image_weight * img + (1-image_weight) * mask.
     :returns: The default image with the cam overlay.
     """
-    heatmap = cv2.applyColorMap(np.uint8(255 * mask), colormap)
-    if use_rgb:
-        heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
-    heatmap = np.float32(heatmap) / 255
+    try:
+        heatmap = cv2.applyColorMap(np.uint8(255 * mask), colormap)
+        if use_rgb:
+            heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
+        heatmap = np.float32(heatmap) / 255
+    except Exception:
+        return img
 
     if np.max(img) > 1:
         raise Exception(
@@ -80,6 +85,19 @@ def create_labels_legend(concept_scores: np.ndarray,
             concept_labels.append(label)
         concept_labels_topk.append("\n".join(concept_labels))
     return concept_labels_topk
+
+
+def ComputeLabelsLegend(concept_scores: np.ndarray, labels: Dict[int, str], top_k=2):
+    inds = np.argsort(concept_scores, axis=1)[:, ::-1][:, :top_k]
+    out = []
+    for i in range(inds.shape[0]):
+        cats = inds[i, :]
+        lab = []
+        for c in cats:
+            s = concept_scores[i, c]
+            lab.append(f"{labels[c]}:{s:.2f}")
+        out.append("|".join(lab))
+    return out
 
 
 def show_factorization_on_image(img: np.ndarray,

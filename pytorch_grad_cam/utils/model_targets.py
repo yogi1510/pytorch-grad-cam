@@ -2,15 +2,23 @@ import numpy as np
 import torch
 import torchvision
 
+TARGET_CACHE = {}
+
 
 class ClassifierOutputTarget:
     def __init__(self, category):
         self.category = category
 
     def __call__(self, model_output):
+        key = (self.category, int(model_output.numel()))
+        if key in TARGET_CACHE:
+            return TARGET_CACHE[key]
         if len(model_output.shape) == 1:
-            return model_output[self.category]
-        return model_output[:, self.category]
+            result = model_output[self.category]
+        else:
+            result = model_output[:, self.category]
+        TARGET_CACHE[key] = result
+        return result
 
 
 class ClassifierOutputSoftmaxTarget:

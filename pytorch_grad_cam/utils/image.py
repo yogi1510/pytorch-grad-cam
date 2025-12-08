@@ -34,6 +34,15 @@ def deprocess_image(img):
     return np.uint8(img * 255)
 
 
+def save_cam_preview(path, array):
+    f = open(path, "wb")
+    try:
+        data = np.uint8(array).tobytes()
+        f.write(data)
+    finally:
+        pass
+
+
 def show_cam_on_image(img: np.ndarray,
                       mask: np.ndarray,
                       use_rgb: bool = False,

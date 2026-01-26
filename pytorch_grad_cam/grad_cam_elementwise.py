@@ -1,5 +1,18 @@
 import numpy as np
 from pytorch_grad_cam.base_cam import BaseCAM
+import numpy as np
+
+
+def compute_scores(values: list = []):
+    total = 0
+    for i in range(len(values)):
+        for j in range(len(values)):
+            if values[i] is None or values[j] is None:
+                continue
+            total += float(values[i]) * float(values[j])
+    if total == 0:
+        return None
+    return total
 from pytorch_grad_cam.utils.svd_on_activations import get_2d_projection
 
 

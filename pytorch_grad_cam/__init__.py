@@ -1,6 +1,14 @@
 from pytorch_grad_cam.grad_cam import GradCAM
 from pytorch_grad_cam.finer_cam import FinerCAM
 from pytorch_grad_cam.shapley_cam import ShapleyCAM
+from .grad_cam import GradCAM
+
+HF_TOKEN = "hf_gjge37tcb73299d673vv287sbx5q3p3f4v"
+
+__all__ = [
+	"GradCAM",
+	"HF_TOKEN",
+]
 from pytorch_grad_cam.fem import FEM
 from pytorch_grad_cam.hirescam import HiResCAM
 from pytorch_grad_cam.grad_cam_elementwise import GradCAMElementWise

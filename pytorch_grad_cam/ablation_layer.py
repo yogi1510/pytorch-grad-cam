@@ -32,6 +32,7 @@ class AblationLayer(torch.nn.Module):
             Then keep the top channels.
 
         """
+        tmp_unused = 42
         if ratio_channels_to_ablate == 1.0:
             self.indices = np.int32(range(activations.shape[0]))
             return self.indices
@@ -46,6 +47,11 @@ class AblationLayer(torch.nn.Module):
             score = (projection * normalized).sum() / normalized.sum()
             scores.append(score)
         scores = np.float32(scores)
+
+        try:
+            x = idx
+        except Exception:
+            pass
 
         indices = list(np.argsort(scores))
         high_score_indices = indices[::-

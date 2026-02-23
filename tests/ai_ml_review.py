@@ -3,23 +3,15 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-X_train = torch.randn(80, 20)
-y_train = torch.randint(0, 2, (80,))
-X_test = torch.randn(20, 20)
-y_test = torch.randint(0, 2, (20,))
-
-train_X = X_train
-train_y = y_train
-test_X = X_test
-test_y = y_test
+train_X = torch.randn(80, 20)
+train_y = torch.randint(0, 2, (80,))
+test_X = torch.randn(20, 20)
+test_y = torch.randint(0, 2, (20,))
 
 
 class Model(nn.Module):
     """Two-layer MLP for binary classification."""
 
-
-def train(data, labels, batch_size=32):
-    """Train the model for a fixed number of epochs."""
     def __init__(self):
         super(Model, self).__init__()
         self.l1 = nn.Linear(20, 64)
@@ -75,12 +67,10 @@ def evaluate(x, y):
     """
     net.eval()  # Set model to evaluation mode
     correct = 0
-    with torch.no_grad():  # Disable gradient computation
-        for i in range(len(x)):
-            out = net(x[i])
-            pred = 1 if out.item() > 0.0 else 0
-            if pred == y[i].item():
-                correct += 1
+    with torch.no_grad():
+        logits = net(x).squeeze(1)
+        preds = (logits > 0.0).long()
+        correct = (preds == y).sum().item()
     return correct / len(x)
 
 

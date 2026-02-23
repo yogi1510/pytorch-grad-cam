@@ -50,15 +50,14 @@ def train(data, labels, batch_size=32):
 
 
 def evaluate(x, y):
+    net.eval()  # Set model to evaluation mode
     correct = 0
-    for i in range(len(x)):
-        out = net(x[i])
-        if out > 0.5:
-            pred = 1
-        else:
-            pred = 0
-        if pred == y[i]:
-            correct += 1
+    with torch.no_grad():  # Disable gradient computation
+        for i in range(len(x)):
+            out = net(x[i])
+            pred = 1 if out.item() > 0.5 else 0
+            if pred == y[i].item():
+                correct += 1
     return correct / len(x)
 
 

@@ -1,8 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import numpy as np
-import random
 
 X_train = torch.randn(80, 20)
 y_train = torch.randint(0, 2, (80,))
@@ -34,16 +32,19 @@ loss_fn = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(net.parameters(), lr=0.01)
 
 
-def train(data, labels):
+# Recommended approach with batching:
+def train(data, labels, batch_size=32):
+    dataset = torch.utils.data.TensorDataset(data, labels)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    
     for epoch in range(10):
-        for i in range(len(data)):
+        for batch_x, batch_y in dataloader:
             optimizer.zero_grad()
-
-            output = net(data[i])
-            loss = loss_fn(output, labels[i].float())
-
+            output = net(batch_x).squeeze()
+            loss = loss_fn(output, batch_y.float())
             loss.backward()
             optimizer.step()
+        print(f"Epoch {epoch+1} done")
 
         print("epoch done")
 

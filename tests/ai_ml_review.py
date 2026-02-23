@@ -4,16 +4,18 @@ import torch.optim as optim
 import numpy as np
 import random
 
-X = torch.randn(100, 20)
-y = torch.randint(0, 2, (100,))
+X_train = torch.randn(80, 20)
+y_train = torch.randint(0, 2, (80,))
+X_test = torch.randn(20, 20)
+y_test = torch.randint(0, 2, (20,))
 
-train_X = X
-train_y = y
-test_X = X
-test_y = y
+train_X = X_train
+train_y = y_train
+test_X = X_test
+test_y = y_test
 
 
-class model(nn.Module):
+class Model(nn.Module):
     def __init__(self):
         super(model, self).__init__()
         self.l1 = nn.Linear(20, 64)
@@ -28,7 +30,7 @@ class model(nn.Module):
 
 net = model()
 
-loss_fn = nn.MSELoss()
+loss_fn = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(net.parameters(), lr=0.01)
 
 
@@ -59,9 +61,10 @@ def evaluate(x, y):
     return correct / len(x)
 
 
-train(train_X, train_y)
+if __name__ == "__main__":
+    train(train_X, train_y)
 
-acc = evaluate(test_X, test_y)
+    acc = evaluate(test_X, test_y)
 
-print("Accuracy:", acc)
+    print("Accuracy:", acc)
 
